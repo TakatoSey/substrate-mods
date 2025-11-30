@@ -1,12 +1,12 @@
-##How to Build the Mod
+How to Build the Mod
 
 Follow these steps to compile the mod from source.
 
-###Prerequisites
+Prerequisites
 - [.NET SDK 6.0 or newer](https://dotnet.microsoft.com/download) (required for building)
 - A copy of **Substrate: Emergence** (Steam or itch.io)
 
-### Build Instructions
+Build Instructions
 
 1. **Place your mod folder inside the game directory**  
    Copy this folder (e.g., `CellHUDMod`) into your game’s root folder
