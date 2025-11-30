@@ -3,7 +3,7 @@
 **Requirements**
 - [.NET SDK 6.0 or newer](https://dotnet.microsoft.com/download) (required for building)
 
-**Build Instructions**
+**Build Instructions:**
 
 1. *Place your mod folder inside the game directory*
 
