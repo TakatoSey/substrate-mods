@@ -4,7 +4,6 @@ Follow these steps to compile the mod from source.
 
 Prerequisites
 - [.NET SDK 6.0 or newer](https://dotnet.microsoft.com/download) (required for building)
-- A copy of **Substrate: Emergence** (Steam or itch.io)
 
 Build Instructions
 
