@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <AssemblyName>CuteCellsMod</AssemblyName>
+    <AssemblyName>CatEarsMod</AssemblyName>
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Platforms>AnyCPU</Platforms>
@@ -32,3 +32,4 @@
     </Reference>
   </ItemGroup>
 </Project>
+
