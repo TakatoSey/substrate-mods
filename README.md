@@ -21,3 +21,5 @@
 
    Copy `CellHUDMod.dll` into your BepInEx plugins folder:
    `Substrate-Emergence/BepInEx/plugins/CellHUDMod/CellHUDMod.dll`
+
+   OR just open build.bat
