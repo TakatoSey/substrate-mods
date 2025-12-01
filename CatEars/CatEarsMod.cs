@@ -100,8 +100,8 @@ namespace CatEarsMod
         private LineRenderer leftInner, rightInner;
 
         private float wigglePhase;
-        private static readonly Color OuterColor = new(1f, 0.4f, 0.7f, 0.95f);   // Pink
-        private static readonly Color InnerColor = new(1f, 0.7f, 0.85f, 0.9f);     // Light pink
+        private static readonly Color OuterColor = new(1f, 0.4f, 0.7f, 0.95f);// Pink
+        private static readonly Color InnerColor = new(1f, 0.7f, 0.85f, 0.9f);// Light pink
 
         private void Awake()
         {
@@ -206,3 +206,4 @@ namespace CatEarsMod
         }
     }
 }
+
