@@ -31,7 +31,7 @@ namespace PartyHatsMod
             var allCells = CellBody.AllCells;
             if (allCells == null) return;
 
-            // Add hats to new cells
+            // Add hats to any new cells
             foreach (var cell in allCells)
             {
                 if (cell != null && !activeHats.ContainsKey(cell))
@@ -40,7 +40,7 @@ namespace PartyHatsMod
                 }
             }
 
-            // Clean up destroyed cells/hats
+            // Clean up destroyed or null entries
             var deadEntries = new List<CellBody>();
             foreach (var entry in activeHats)
             {
@@ -185,18 +185,18 @@ namespace PartyHatsMod
             float width = radius * scaledSize * 0.7f;
             float tiltAngle = Mathf.PI * 0.5f + wobbleOffset;
 
-            Vector2 upwardDirection = new(Mathf.Cos(tiltAngle), Mathf.Sin(tiltAngle));
-            Vector2 rightDirection = new(-upwardDirection.y, upwardDirection.x);
+            Vector2 upwardDirection = new Vector2(Mathf.Cos(tiltAngle), Mathf.Sin(tiltAngle));
+            Vector2 rightDirection = new Vector2(-upwardDirection.y, upwardDirection.x);
             Vector2 tipPosition = basePosition + upwardDirection * height;
 
-            // Cone
+            // Draw cone
             coneRenderer.positionCount = 2;
             coneRenderer.SetPosition(0, basePosition);
             coneRenderer.SetPosition(1, tipPosition);
             coneRenderer.startWidth = width;
             coneRenderer.endWidth = 0.01f;
 
-            // Stripes
+            // Draw stripes
             float stripeThickness = Mathf.Clamp(radius * 0.04f, 0.015f, 0.06f);
             for (int i = 0; i < stripeCount; i++)
             {
@@ -210,14 +210,14 @@ namespace PartyHatsMod
                 stripeRenderers[i].SetPosition(1, stripeCenter - rightDirection * stripeWidth);
             }
 
-            // Pompom
+            // Draw pompom
             float pompomRadius = radius * scaledSize * 0.18f;
             pompomRenderer.positionCount = 13;
             pompomRenderer.startWidth = pompomRenderer.endWidth = pompomRadius * 1.5f;
             for (int i = 0; i <= 12; i++)
             {
                 float angle = i / 12f * Mathf.PI * 2f;
-                Vector2 offset = new(Mathf.Cos(angle), Mathf.Sin(angle)) * pompomRadius * 0.5f;
+                Vector2 offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * pompomRadius * 0.5f;
                 pompomRenderer.SetPosition(i, tipPosition + offset);
             }
         }
