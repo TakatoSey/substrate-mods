@@ -11,3 +11,5 @@
 2. *Open build.bat*
 
    The mod will automatically build and copy itself in `Substrate-Emergence/BepInEx/plugins`
+
+The discontinued mods are located in ALL branch ( https://github.com/TakatoSey/substrate-mods/tree/ALL )
