@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using System;
 using System.Reflection;
 using System.Collections.Generic;
+using System.IO;
 
 namespace GameTweakerMod
 {
@@ -53,16 +54,20 @@ namespace GameTweakerMod
         private int cellIndex = 0;
 
         private Dictionary<string, float> settings = new Dictionary<string, float>();
+        private Dictionary<string, float> savedDefaults = new Dictionary<string, float>();
         private bool autoApply = true;
         private int previousCellCount = 0;
         private float updateTimer = 0f;
         private bool extractedFromGame = false;
+        private string saveFilePath;
 
         private void Start()
         {
             backgroundTexture = new Texture2D(1, 1);
             backgroundTexture.SetPixel(0, 0, new Color(0.1f, 0.12f, 0.15f, 0.95f));
             backgroundTexture.Apply();
+            saveFilePath = Path.Combine(BepInEx.Paths.ConfigPath, "GameTweaker_Defaults.txt");
+            LoadSavedDefaults();
             SetupFallbackDefaults();
         }
 
@@ -91,23 +96,63 @@ namespace GameTweakerMod
 
         private void SetupFallbackDefaults()
         {
-            settings["pinchTime"] = 67f;
-            settings["splitPause"] = 67f;
-            settings["polePullStrength"] = 67f;
-            settings["daughterOffsetFactor"] = 67f;
-            settings["cytosolDrainPerSecond"] = 67f;
-            settings["autoVacuoleToNucleusPerSecond"] = 67f;
-            settings["vacuoleTransferPerSecond"] = 67f;
-            settings["baseConversionRate"] = 67f;
-            settings["mass"] = 67f;
-            settings["linearDamping"] = 67f;
-            settings["growthSmoothing"] = 67f;
-            settings["waveSpeed"] = 67f;
-            settings["mutationChance"] = 67f;
-            settings["minPercentDelta"] = 67f;
-            settings["maxPercentDelta"] = 67f;
-            settings["geneDuplicationMultiplier"] = 67f;
-            settings["geneDeletionMultiplier"] = 67f;
+            var hardcodedDefaults = new Dictionary<string, float>
+            {
+                { "pinchTime", 0.7f },
+                { "splitPause", 0.12f },
+                { "polePullStrength", 0.6f },
+                { "daughterOffsetFactor", 0.8f },
+                { "cytosolDrainPerSecond", 0.002f },
+                { "autoVacuoleToNucleusPerSecond", 1f },
+                { "vacuoleTransferPerSecond", 6f },
+                { "baseConversionRate", 2f },
+                { "mass", 1f },
+                { "linearDamping", 0.988f },
+                { "growthSmoothing", 3.5f },
+                { "mutationChance", 0.25f },
+                { "minPercentDelta", 0.2f },
+                { "maxPercentDelta", 0.6f },
+                { "geneDuplicationMultiplier", 1f },
+                { "geneDeletionMultiplier", 1f }
+            };
+
+            foreach (var kvp in hardcodedDefaults)
+            {
+                if (savedDefaults.ContainsKey(kvp.Key))
+                    settings[kvp.Key] = savedDefaults[kvp.Key];
+                else
+                    settings[kvp.Key] = kvp.Value;
+            }
+        }
+
+        private void LoadSavedDefaults()
+        {
+            savedDefaults.Clear();
+            if (!File.Exists(saveFilePath)) return;
+
+            try
+            {
+                var lines = File.ReadAllLines(saveFilePath);
+                foreach (var line in lines)
+                {
+                    var parts = line.Split('=');
+                    if (parts.Length == 2 && float.TryParse(parts[1], out float value))
+                        savedDefaults[parts[0]] = value;
+                }
+            }
+            catch { }
+        }
+
+        private void SaveDefaults()
+        {
+            try
+            {
+                var lines = new List<string>();
+                foreach (var kvp in savedDefaults)
+                    lines.Add($"{kvp.Key}={kvp.Value}");
+                File.WriteAllLines(saveFilePath, lines);
+            }
+            catch { }
         }
 
         private void ExtractSettingsFromGame()
@@ -151,10 +196,9 @@ namespace GameTweakerMod
             if (mitochondria.Length > 0)
                 settings["baseConversionRate"] = ReadField<float>(mitochondria[0], "baseConversionRate");
 
-            var ciliaController = cell.GetComponent<CiliaController>();
-            if (ciliaController != null)
-                settings["waveSpeed"] = ReadField<float>(ciliaController, "waveSpeed");
-
+            foreach (var kvp in settings)
+                savedDefaults[kvp.Key] = kvp.Value;
+            SaveDefaults();
             extractedFromGame = true;
         }
 
@@ -370,7 +414,6 @@ namespace GameTweakerMod
             hasChanges |= RenderSettingSlider("mass", "Mass", 0.1f, 10f);
             hasChanges |= RenderSettingSlider("linearDamping", "Linear Damping", 0.9f, 1f);
             hasChanges |= RenderSettingSlider("growthSmoothing", "Growth Smoothing", 0.5f, 10f);
-            hasChanges |= RenderSettingSlider("waveSpeed", "Cilia Wave Speed", 0.5f, 10f);
 
             GUILayout.Label("Mutation", titleStyle);
             hasChanges |= RenderSettingSlider("mutationChance", "Mutation Chance", 0f, 1f);
@@ -459,10 +502,6 @@ namespace GameTweakerMod
                 if (mito != null)
                     WriteField(mito, "baseConversionRate", settings["baseConversionRate"]);
             }
-
-            var ciliaController = cell.GetComponent<CiliaController>();
-            if (ciliaController != null)
-                WriteField(ciliaController, "waveSpeed", settings["waveSpeed"]);
         }
 
         private void RenderSpawnTab()
